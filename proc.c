@@ -580,7 +580,7 @@ int procdump(void)
       [RUNNING] "running",
       [ZOMBIE] "zombie"};
 
-  cprintf("PID\tPriority\tState\tr_time\tw_time\tn_run\tcur_q\tq[0]\tq[1]\tq[2]\tq[3]\tq[4]\n"); // By Order of the Peaky Blinders
+  cprintf("PID\tPriority\tState\t\tr_time\tw_time\tn_run\tcur_q\tq[0]\tq[1]\tq[2]\tq[3]\tq[4]\n"); // By Order of the Peaky Blinders
 
   int i;
   struct proc *p;
@@ -595,7 +595,7 @@ int procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d\t%d\t\t%s\t\t%d\t%d\t%d\t%d", p->pid, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+    cprintf("%d\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
 
     for (i = 0; i < 5; i++) // By Order of the Peaky Blinders
       cprintf("\t%d", p->queue[i]);
