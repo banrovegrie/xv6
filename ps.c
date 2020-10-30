@@ -7,7 +7,7 @@
 
 int main(int argc, char **argv)
 {
-    if (argc <= 1)
+    if (argc != 1)
     {
         printf(2, "error in number of arguments\n");
         exit();
