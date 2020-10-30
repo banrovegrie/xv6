@@ -90,7 +90,9 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->rtime = 0, p->ctime = ticks, p->etime = 0; // Billie
+  p->rtime = 0, p->ctime = ticks, p->etime = 0, p->number_of_runs = 0;                 // By Order of the Peaky Blinders
+  p->priority = 0, p->number_of_runs = 0, p->cur_queue;                                //By Order of the Peaky Blinders
+  p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -118,7 +120,7 @@ found:
   return p;
 }
 
-void increase_runtime(void) // Billie
+void increase_runtime(void) // By Order of the Peaky Blinders
 {
   acquire(&ptable.lock);
   for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
@@ -246,7 +248,7 @@ void exit(void)
 
   if (curproc == initproc)
     panic("init exiting");
-  curproc->etime = ticks; // Billie
+  curproc->etime = ticks; // By Order of the Peaky Blinders
 
   // Close all open files.
   for (fd = 0; fd < NOFILE; fd++)
@@ -332,7 +334,7 @@ int wait(void)
   }
 }
 
-// Billie
+// By Order of the Peaky Blinders
 int waitx(int *wtime, int *rtime)
 {
   struct proc *p;
@@ -411,7 +413,7 @@ void scheduler(void)
       // before jumping back to us.
       c->proc = p;
       switchuvm(p);
-      p->state = RUNNING;
+      p->state = RUNNING, p->number_of_runs++; // By Order of the Peaky Blinders
 
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -568,19 +570,22 @@ int kill(int pid)
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
 // No lock to avoid wedging a stuck machine further.
-void procdump(void)
+int procdump(void)
 {
   static char *states[] = {
       [UNUSED] "unused",
       [EMBRYO] "embryo",
-      [SLEEPING] "sleep ",
-      [RUNNABLE] "runble",
-      [RUNNING] "run   ",
+      [SLEEPING] "sleeping",
+      [RUNNABLE] "runnable",
+      [RUNNING] "running",
       [ZOMBIE] "zombie"};
+
+  cprintf("PID\tPriority\tState\tr_time\tw_time\tn_run\tcur_q\tq[0]\tq[1]\tq[2]\tq[3]\tq[4]\n"); // By Order of the Peaky Blinders
+
   int i;
   struct proc *p;
   char *state;
-  uint pc[10];
+  // uint pc[10];
 
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
@@ -590,13 +595,20 @@ void procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d %s %s", p->pid, state, p->name);
-    if (p->state == SLEEPING)
+    cprintf("%d\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+
+    for (i = 0; i < 5; i++) // By Order of the Peaky Blinders
+      cprintf("\t%d", p->queue[i]);
+
+    // By Order of the Peaky Blinders
+    /*if (p->state == SLEEPING)
     {
       getcallerpcs((uint *)p->context->ebp + 2, pc);
       for (i = 0; i < 10 && pc[i] != 0; i++)
         cprintf(" %p", pc[i]);
-    }
+    }*/
     cprintf("\n");
   }
+
+  return 0;
 }

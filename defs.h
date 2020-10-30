@@ -111,7 +111,7 @@ int kill(int);
 struct cpu *mycpu(void);
 struct proc *myproc();
 void pinit(void);
-void procdump(void);
+int procdump(void); // By Order of the Peaky Blinders
 void scheduler(void) __attribute__((noreturn));
 void sched(void);
 void setproc(struct proc *);
@@ -119,8 +119,8 @@ void sleep(void *, struct spinlock *);
 void userinit(void);
 int wait(void);
 
-int waitx(int *, int *); // Billie
-void increase_runtime(void); // Billie
+int waitx(int *, int *); // By Order of the Peaky Blinders
+void increase_runtime(void); // By Order of the Peaky Blinders
 
 void wakeup(void *);
 void yield(void);

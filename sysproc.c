@@ -23,7 +23,7 @@ int sys_wait(void)
   return wait();
 }
 
-int sys_waitx(void) // Billie
+int sys_waitx(void) // By Order of the Peaky Blinders
 {
   int *wtime, *rtime;
   if (argptr(0, (void *)&wtime, sizeof(int)) < 0)
@@ -62,6 +62,12 @@ int sys_sbrk(void)
   if (growproc(n) < 0)
     return -1;
   return addr;
+}
+
+int sys_proc(void) // By Order of the Peaky Blinders
+{
+  procdump();
+  return 0;
 }
 
 int sys_sleep(void)

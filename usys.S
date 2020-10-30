@@ -29,4 +29,5 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
-SYSCALL(waitx) /*Billie*/ 
+SYSCALL(waitx) /*By Order of the Peaky Blinders*/ 
+SYSCALL(procdump) /*By Order of the Peaky Blinders*/

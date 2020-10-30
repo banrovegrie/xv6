@@ -182,7 +182,8 @@ UPROGS=\
 	_wc\
 	_zombie\
 	_time\
-	# Billie
+	_ps\
+	# By Order of the Peaky Blinders
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -256,7 +257,8 @@ EXTRA=\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	.gdbinit.tmpl gdbutil\
 	time.c\
-	# Billie
+	ps.c\
+	# By Order of the Peaky Blinders
 	
 dist:
 	rm -rf dist

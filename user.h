@@ -5,7 +5,7 @@ struct rtcdate;
 int fork(void);
 int exit(void) __attribute__((noreturn));
 int wait(void);
-int waitx(int *, int *); // Billie
+int waitx(int *, int *); // By Order of the Peaky Blinders
 int pipe(int *);
 int write(int, const void *, int);
 int read(int, void *, int);
@@ -24,6 +24,7 @@ int getpid(void);
 char *sbrk(int);
 int sleep(int);
 int uptime(void);
+int procdump(void); // By Order of the Peaky Blinders
 
 // ulib.c
 int stat(const char *, struct stat *);

@@ -61,7 +61,7 @@ struct proc
   struct inode *cwd;          // Current directory
   char name[16];              // Process name (debugging)
 
-  int rtime, etime, ctime; // Billie
+  int rtime, etime, ctime, priority, number_of_runs, cur_queue, queue[5]; // By Order of the Peaky Blinders
 };
 
 // Process memory is laid out contiguously, low addresses first:
