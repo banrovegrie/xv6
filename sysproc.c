@@ -23,20 +23,17 @@ int sys_wait(void)
   return wait();
 }
 
-// Billie
-int sys_waitx(void)
+int sys_waitx(void) // Billie
 {
-  int *wtime = 0;
-  int *rtime = 0;
-
-  /*if (argptr(0, &wtime, sizeof(int)) < 0)
+  int *wtime, *rtime;
+  if (argptr(0, (void *)&wtime, sizeof(int)) < 0)
   {
     return -1;
   }
-  if (argptr(1, &rtime, sizeof(int)) < 0)
+  if (argptr(1, (void *)&rtime, sizeof(int)) < 0)
   {
     return -1;
-  }*/
+  }
   return waitx(wtime, rtime);
 }
 

@@ -118,6 +118,15 @@ found:
   return p;
 }
 
+void increase_runtime(void) // Billie
+{
+  acquire(&ptable.lock);
+  for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    if (p->state == RUNNING)
+      p->rtime++;
+  release(&ptable.lock);
+}
+
 //PAGEBREAK: 32
 // Set up first user process.
 void userinit(void)

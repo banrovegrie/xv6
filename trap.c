@@ -53,8 +53,7 @@ void trap(struct trapframe *tf)
       ticks++;
 
       // Billie
-      if (myproc() && myproc()->state == RUNNING)
-        myproc()->rtime++, cprintf("helo");
+      increase_runtime();
 
       wakeup(&ticks);
       release(&tickslock);
