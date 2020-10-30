@@ -26,8 +26,8 @@ int sys_wait(void)
 // Billie
 int sys_waitx(void)
 {
-  int *wtime;
-  int *rtime;
+  int *wtime = 0;
+  int *rtime = 0;
 
   /*if (argptr(0, &wtime, sizeof(int)) < 0)
   {
