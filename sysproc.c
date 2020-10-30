@@ -28,14 +28,15 @@ int sys_waitx(void)
 {
   int *wtime;
   int *rtime;
-  if (argptr(0, &wtime, sizeof(int)) < 0)
+
+  /*if (argptr(0, &wtime, sizeof(int)) < 0)
   {
     return -1;
   }
   if (argptr(1, &rtime, sizeof(int)) < 0)
   {
     return -1;
-  }
+  }*/
   return waitx(wtime, rtime);
 }
 
