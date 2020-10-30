@@ -91,7 +91,7 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->rtime = 0, p->ctime = ticks, p->etime = 0, p->number_of_runs = 0;                 // By Order of the Peaky Blinders
-  p->priority = 0, p->number_of_runs = 0, p->cur_queue;                                //By Order of the Peaky Blinders
+  p->priority = 0, p->cur_queue = 0;                                                   //By Order of the Peaky Blinders
   p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
   release(&ptable.lock);
 
