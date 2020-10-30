@@ -90,7 +90,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->rtime = 0, p->ctime = ticks, p->etime = 0, p->number_of_runs = 0;                 // By Order of the Peaky Blinders
+  p->rtime = 0, p->ctime = ticks, p->etime = ticks, p->number_of_runs = 0;             // By Order of the Peaky Blinders
   p->priority = 0, p->cur_queue = 0;                                                   //By Order of the Peaky Blinders
   p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
   release(&ptable.lock);
@@ -125,7 +125,7 @@ void increase_runtime(void) // By Order of the Peaky Blinders
   acquire(&ptable.lock);
   for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if (p->state == RUNNING)
-      p->rtime++;
+      p->etime = ticks, p->rtime++;
   release(&ptable.lock);
 }
 
