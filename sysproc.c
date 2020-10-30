@@ -64,7 +64,7 @@ int sys_sbrk(void)
   return addr;
 }
 
-int sys_proc(void) // By Order of the Peaky Blinders
+int sys_procdump(void) // By Order of the Peaky Blinders
 {
   procdump();
   return 0;
