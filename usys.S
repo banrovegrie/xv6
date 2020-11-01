@@ -31,3 +31,4 @@ SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(waitx) /*By Order of the Peaky Blinders*/ 
 SYSCALL(procdump) /*By Order of the Peaky Blinders*/
+SYSCALL(set_priority) /*By Order of the Peaky Blinders*/

@@ -14,6 +14,12 @@ struct cpu
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
+// By Order of the Peaky Blinders
+#define SCHED_RR 0
+#define SCHED_PBS 2
+#define SCHED_MLFQ 3
+#define SCHED_FCFS 1
+
 //PAGEBREAK: 17
 // Saved registers for kernel context switches.
 // Don't need to save all the segment registers (%cs, etc),
@@ -62,6 +68,7 @@ struct proc
   char name[16];              // Process name (debugging)
 
   int rtime, etime, ctime, priority, number_of_runs, cur_queue, queue[5]; // By Order of the Peaky Blinders
+  int number_of_runs_by_priority; // By Order of the Peaky Blinders
 };
 
 // Process memory is laid out contiguously, low addresses first:

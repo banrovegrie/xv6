@@ -101,6 +101,7 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 extern int sys_waitx(void); // By Order of the Peaky Blinders
 extern int sys_procdump(void);   // By Order of the Peaky Blinders
+extern int sys_set_priority(void); // By Order of the Peaky Blinders
 
 static int (*syscalls[])(void) = {
     [SYS_fork] sys_fork,
@@ -126,6 +127,7 @@ static int (*syscalls[])(void) = {
     [SYS_close] sys_close,
     [SYS_waitx] sys_waitx,   // By Order of the Peaky Blinders
     [SYS_procdump] sys_procdump, // By Order of the Peaky Blinders
+    [SYS_set_priority] sys_set_priority, // By Order of the Peaky Blinders
 };
 
 void syscall(void)

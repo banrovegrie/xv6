@@ -22,3 +22,4 @@
 #define SYS_close 21
 #define SYS_waitx 22 // By Order of the Peaky Blinders
 #define SYS_procdump 23 // By Order of the Peaky Blinders
+#define SYS_set_priority 24 // By Order of the Peaky Blinders

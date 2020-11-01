@@ -103,3 +103,16 @@ int sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int sys_set_priority(void) // By Order of the Peaky Blinders
+{
+  int new_priority, pid;
+
+  if (argint(0, &new_priority) < 0)
+    return -1;
+
+  if (argint(1, &pid) < 0)
+    return -1;
+
+  return set_priority(new_priority, pid);
+}

@@ -25,6 +25,7 @@ char *sbrk(int);
 int sleep(int);
 int uptime(void);
 int procdump(void); // By Order of the Peaky Blinders
+int set_priority(int, int); // By Order of the Peaky Blinders
 
 // ulib.c
 int stat(const char *, struct stat *);

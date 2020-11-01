@@ -90,9 +90,29 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->rtime = 0, p->ctime = ticks, p->etime = ticks, p->number_of_runs = 0;             // By Order of the Peaky Blinders
-  p->priority = 0, p->cur_queue = 0;                                                   //By Order of the Peaky Blinders
-  p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
+  p->rtime = 0, p->ctime = ticks, p->etime = ticks, p->number_of_runs = 0; // By Order of the Peaky Blinders
+  //p->priority = 0, p->cur_queue = 0; - By Order of the Peaky Blinders
+  //p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
+
+  // By Order of the Peaky Blinders
+
+  p->number_of_runs_by_priority = 0;
+#if SCHEDULER == SCHED_PBS
+  p->priority = 60;
+#else
+  p->priority = -1;
+#endif
+
+#if SCHEDULER == SCHED_MLFQ
+  for (int i = 0; i < 5; i++)
+    p->queue[i] = 0;
+  p->cur_queue = -1;
+#else
+  p->cur_queue = -1;
+  for (int i = 0; i < 5; i++)
+    p->queue[i] = -1;
+#endif
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -127,6 +147,36 @@ void increase_runtime(void) // By Order of the Peaky Blinders
     if (p->state == RUNNING)
       p->etime = ticks, p->rtime++;
   release(&ptable.lock);
+}
+
+int set_priority(int new_priority, int pid) // By Order of the Peaky Blinders
+{
+  int old_priority = 0; // set up old priority
+  if (new_priority < 0)
+    return -1;
+  else if (new_priority > 100)
+    return -1;
+  else if (pid < 0)
+    return -1;
+
+  // start lock
+  acquire(&ptable.lock);
+  struct proc *p;
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->pid == pid)
+    {
+      old_priority = p->priority, p->priority = new_priority;
+      if (new_priority != old_priority)
+        p->number_of_runs_by_priority = 0;
+    }
+  }
+  release(&ptable.lock);
+
+  if (new_priority != old_priority)
+    yield();
+
+  return old_priority;
 }
 
 //PAGEBREAK: 32
@@ -390,7 +440,7 @@ int waitx(int *wtime, int *rtime)
 //  - swtch to start running that process
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
-void scheduler(void)
+/*void scheduler(void) // By Order of the Peaky Blinders
 {
   struct proc *p;
   struct cpu *c = mycpu();
@@ -424,7 +474,7 @@ void scheduler(void)
     }
     release(&ptable.lock);
   }
-}
+}*/
 
 // Enter scheduler.  Must hold only ptable.lock
 // and have changed proc->state. Saves and restores

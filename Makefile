@@ -28,6 +28,27 @@ OBJS = \
 	vectors.o\
 	vm.o\
 
+# By Order of the Peaky Blinders
+ifndef SCHEDULER
+	OBJS += scheduler_rr.o
+endif
+
+ifeq ($(SCHEDULER), FCFS)
+	OBJS += scheduler_fcfs.o
+endif
+
+ifeq ($(SCHEDULER), RR)
+	OBJS += scheduler_rr.o
+endif
+
+ifeq ($(SCHEDULER), PBS)
+	OBJS += scheduler_pbs.o
+endif
+
+ifeq ($(SCHEDULER), MLFQ)
+	OBJS += scheduler_mlfq.o
+endif
+
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
 
@@ -89,6 +110,24 @@ endif
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]nopie'),)
 CFLAGS += -fno-pie -nopie
 endif
+
+# By Order of the Peaky Blinders - set scheduler
+SCHED_MACRO = -D SCHEDULER=SCHED_RR
+
+ifeq ($(SCHEDULER), FCFS)
+	SCHED_MACRO = -D SCHEDULER=SCHED_FCFS
+endif
+
+ifeq ($(SCHEDULER), PBS)
+	SCHED_MACRO = -D SCHEDULER=SCHED_PBS
+endif
+
+ifeq ($(SCHEDULER), MLFQ)
+	SCHED_MACRO = -D SCHEDULER=SCHED_MLFQ
+endif
+
+CFLAGS += $(SCHED_MACRO)
+
 
 xv6.img: bootblock kernel
 	dd if=/dev/zero of=xv6.img count=10000
@@ -183,6 +222,7 @@ UPROGS=\
 	_zombie\
 	_time\
 	_ps\
+	_setPriority\
 	# By Order of the Peaky Blinders
 
 fs.img: mkfs README $(UPROGS)
@@ -258,6 +298,7 @@ EXTRA=\
 	.gdbinit.tmpl gdbutil\
 	time.c\
 	ps.c\
+	setPriority.c\
 	# By Order of the Peaky Blinders
 	
 dist:
