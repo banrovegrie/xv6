@@ -124,7 +124,7 @@ void increase_runtime(void); // By Order of the Peaky Blinders
 
 void wakeup(void *);
 void yield(void);
-int set_priorty(int, int); // By Order of the Peaky Blinders
+int set_priority(int, int); // By Order of the Peaky Blinders
 
 // swtch.S
 void swtch(struct context **, struct context *);
