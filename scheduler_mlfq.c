@@ -35,12 +35,9 @@ void scheduler(void)
         sti();
 
         acquire(&ptable.lock);
-
-        // Age the processes
         for (int i = 1; i < 5; i++)
             split(&queues[i], &queues[i - 1], 30);
 
-        // Loop through the queues to find a process to run
         p = 0;
         for (int i = 0; i < 5; i++)
         {
@@ -61,9 +58,6 @@ void scheduler(void)
         p->cur_timeslices++;
         p->number_of_runs++;
 
-        // Switch to chosen process.  It is the process's job
-        // to release ptable.lock and then reacquire it
-        // before jumping back to us.
         c->proc = p;
         switchuvm(p);
         p->state = RUNNING;
@@ -71,11 +65,8 @@ void scheduler(void)
         swtch(&(c->scheduler), p->context);
         switchkvm();
 
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
         c->proc = 0;
 
-        // Back from p
         if (p != 0 && p->state == RUNNABLE)
         {
             if (p->punish == 0)

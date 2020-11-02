@@ -56,10 +56,11 @@ struct node *pop(struct node *head)
 
 int split(struct node **from, struct node **to, int threshold)
 {
-    if (from == 0 || to == 0)
+    if (from == 0)
         return -1;
-
-    if (*from == 0)
+    else if (to == 0)
+        return -1;
+    else if (*from == 0)
         return 0;
 
     struct node *cur = *from;
@@ -69,14 +70,11 @@ int split(struct node **from, struct node **to, int threshold)
 
     while (cur != 0)
     {
-        if (ticks - cur->p->age_time > threshold)
-        {
-            cprintf("MLFQ: process %d promoted to queue %d at ticks: %d\n", cur->p->pid, cur->p->cur_queue - 1, ticks);
-            cur->p->cur_queue--, cur->p->age_time = ticks;
-            count++, prev = cur, cur = cur->next;
-        }
-        else
+        if (ticks - cur->p->age_time <= threshold)
             break;
+        cprintf("MLFQ: process %d promoted to queue %d at ticks: %d\n", cur->p->pid, cur->p->cur_queue - 1, ticks);
+        cur->p->cur_queue--, cur->p->age_time = ticks;
+        count++, prev = cur, cur = cur->next;
     }
     if (prev == 0)
         return 0;
@@ -86,7 +84,6 @@ int split(struct node **from, struct node **to, int threshold)
         struct node *to_end = *to;
         while (to_end->next != 0)
             to_end = to_end->next;
-
         prev->next = 0, to_end->next = *from, *from = cur;
     }
     else

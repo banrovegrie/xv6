@@ -2,7 +2,7 @@
 #include "types.h"
 #include "user.h"
 
-#define num_pro 10
+#define num_pro 5 // originally tested for 10
 #define e_nine ((int)1e9)
 #define e_eight ((int)1e8)
 

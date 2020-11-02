@@ -39,7 +39,7 @@ void scheduler(void)
     struct proc *p;
     struct cpu *c = mycpu();
     c->proc = 0;
-    while (1)
+    for (;;)
     {
         // Enable interrupts on this processor
         sti();
