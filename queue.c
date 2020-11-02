@@ -71,7 +71,7 @@ int split(struct node **from, struct node **to, int threshold)
     {
         if (ticks - cur->p->age_time > threshold)
         {
-            cprintf("MLFQ: process %d promoted to queue %d at ticks: %d", cur->p->pid, cur->p->cur_queue - 1, ticks);
+            cprintf("MLFQ: process %d promoted to queue %d at ticks: %d\n", cur->p->pid, cur->p->cur_queue - 1, ticks);
             cur->p->cur_queue--, cur->p->age_time = ticks;
             count++, prev = cur, cur = cur->next;
         }
