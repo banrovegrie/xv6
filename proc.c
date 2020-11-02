@@ -105,18 +105,14 @@ found:
 
   p->priority = 60, p->timeslices = 0, p->age_time = ticks, p->cur_timeslices = 0; // By Order of the Peaky Blinders
   p->punish = 0, p->cur_queue = 0, p->timeslices = 0;                              // By Order of the PEaky Blinders
+
 #if SCHEDULER == SCHED_PBS
   p->priority = 60;
-#else
-  p->priority = -1;
-#endif
-
-#if SCHEDULER == SCHED_MLFQ
+#elif SCHEDULER == SCHED_MLFQ
   for (int i = 0; i < 5; i++)
     p->queue[i] = 0;
   p->cur_queue = 0;
 #else
-  p->cur_queue = -1;
   for (int i = 0; i < 5; i++)
     p->queue[i] = -1;
 #endif
