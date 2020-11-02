@@ -693,7 +693,7 @@ int procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+    cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (ticks - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
 
     for (i = 0; i < 5; i++) // By Order of the Peaky Blinders
       cprintf("\t%d", p->queue[i]);
