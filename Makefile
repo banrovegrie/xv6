@@ -224,6 +224,7 @@ UPROGS=\
 	_time\
 	_ps\
 	_setPriority\
+	_benchmark\
 	# By Order of the Peaky Blinders
 
 fs.img: mkfs README $(UPROGS)
@@ -300,6 +301,7 @@ EXTRA=\
 	time.c\
 	ps.c\
 	setPriority.c\
+	benchmark.c\
 	# By Order of the Peaky Blinders
 	
 dist:
