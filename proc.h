@@ -16,9 +16,10 @@ extern int ncpu;
 
 // By Order of the Peaky Blinders
 #define SCHED_RR 0
+#define SCHED_FCFS 1
 #define SCHED_PBS 2
 #define SCHED_MLFQ 3
-#define SCHED_FCFS 1
+#define TIMESLICE(i) (int)(1 << i)
 
 //PAGEBREAK: 17
 // Saved registers for kernel context switches.
@@ -68,7 +69,9 @@ struct proc
   char name[16];              // Process name (debugging)
 
   int rtime, etime, ctime, priority, number_of_runs, cur_queue, queue[5]; // By Order of the Peaky Blinders
-  int number_of_runs_by_priority; // By Order of the Peaky Blinders
+  int number_of_runs_by_priority;                                         // By Order of the Peaky Blinders
+
+  int age_time, timeslices, cur_timeslices, punish; // By Order of the Peaky Blinders
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -76,3 +79,10 @@ struct proc
 //   original data and bss
 //   fixed-size stack
 //   expandable heap
+
+struct node // By Order of the Peaky Blinders
+{
+  struct node *next;
+  struct proc *p;
+  int use;
+} surplus_nodes[NPROC], *queues[5];

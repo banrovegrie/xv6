@@ -27,6 +27,7 @@ OBJS = \
 	uart.o\
 	vectors.o\
 	vm.o\
+	queue.o\
 
 # By Order of the Peaky Blinders
 ifndef SCHEDULER

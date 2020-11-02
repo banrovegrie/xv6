@@ -44,7 +44,7 @@ void scheduler(void)
         // Enable interrupts on this processor
         sti();
         // Loop over process table looking for the process with the highest priority (and least n_run_priority to break ties)
-        int min_n_run_priority = ticks + 2;
+        int min_n_run_priority = ticks + 100;
         int max_priority = 101;
         struct proc *selected_proc = 0;
 
@@ -54,10 +54,10 @@ void scheduler(void)
             if (p->state == RUNNABLE)
             {
                 if (p->priority < max_priority)
-                    max_priority = p->priority, min_n_run_priority = p->number_of_runs_by_priority, selected_proc = p;
+                    max_priority = p->priority, min_n_run_priority = p->timeslices, selected_proc = p;
                 else if (p->priority == max_priority)
                     if (p->number_of_runs_by_priority < min_n_run_priority)
-                        min_n_run_priority = p->number_of_runs_by_priority, selected_proc = p;
+                        min_n_run_priority = p->timeslices, selected_proc = p;
             }
         }
 
@@ -67,7 +67,7 @@ void scheduler(void)
             continue;
         }
 
-        selected_proc->number_of_runs_by_priority++;
+        selected_proc->timeslices++;
         selected_proc->number_of_runs++;
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it

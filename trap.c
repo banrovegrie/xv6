@@ -52,9 +52,8 @@ void trap(struct trapframe *tf)
       acquire(&tickslock);
       ticks++;
 
-      // Billie
-      if (myproc() && myproc()->state == RUNNING)
-        myproc()->rtime++;
+      // By Order of the Peaky Blinders
+      increase_runtime();
 
       wakeup(&ticks);
       release(&tickslock);
@@ -128,15 +127,15 @@ void trap(struct trapframe *tf)
   {
     if (tf->trapno == T_IRQ0 + IRQ_TIMER)
     {
-      inc_pinfo_ticks();
-      if (myproc()->cur_timeslices >= TIMESLICE(myproc()->queue))
+      increase_ticks();
+      if (myproc()->cur_timeslices >= TIMESLICE(myproc()->cur_queue))
       {
         punisher();
         yield();
       }
       else
       {
-        inc_timeslice();
+        increase_timeslice();
         return;
       }
     }

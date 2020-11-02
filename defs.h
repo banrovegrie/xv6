@@ -119,12 +119,16 @@ void sleep(void *, struct spinlock *);
 void userinit(void);
 int wait(void);
 
-int waitx(int *, int *); // By Order of the Peaky Blinders
+int waitx(int *, int *);     // By Order of the Peaky Blinders
 void increase_runtime(void); // By Order of the Peaky Blinders
 
 void wakeup(void *);
 void yield(void);
 int set_priority(int, int); // By Order of the Peaky Blinders
+
+void punisher(void);           // By Order of the Peaky Blinders
+void increase_timeslice(void); // By Order of the Peaky Blinders
+void increase_ticks(void);     // By Order of the Peaky Blinders
 
 // swtch.S
 void swtch(struct context **, struct context *);
@@ -193,3 +197,11 @@ void clearpteu(pde_t *pgdir, char *uva);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x) / sizeof((x)[0]))
+
+// queue.c By Order of the Peaky Blinders
+struct node* q_alloc();
+void q_free(struct node* p);
+struct node* push(struct node* head, struct proc* p);
+struct node* pop(struct node* head);
+int split(struct node** from, struct node** to, int threshold);
+int length(struct node* head);

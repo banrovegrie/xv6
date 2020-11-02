@@ -24,6 +24,15 @@ static void wakeup1(void *chan);
 void pinit(void)
 {
   initlock(&ptable.lock, "ptable");
+
+#if SCHEDULER == SCHED_MLFQ
+  acquire(&ptable.lock);
+  for (int i = 0; i < 5; i++)
+    queues[i] = 0;
+  for (int i = 0; i < NPROC; i++)
+    surplus_nodes[i].use = 0;
+  release(&ptable.lock);
+#endif
 }
 
 // Must be called with interrupts disabled
@@ -90,13 +99,12 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
-  p->rtime = 0, p->ctime = ticks, p->etime = ticks, p->number_of_runs = 0; // By Order of the Peaky Blinders
+  p->rtime = 0, p->ctime = ticks, p->etime = 0, p->number_of_runs = 0; // By Order of the Peaky Blinders
   //p->priority = 0, p->cur_queue = 0; - By Order of the Peaky Blinders
   //p->queue[0] = 0, p->queue[1] = 0, p->queue[2] = 0, p->queue[3] = 0, p->queue[4] = 0; // By Order of the Peaky Blinders
 
-  // By Order of the Peaky Blinders
-
-  p->number_of_runs_by_priority = 0;
+  p->priority = 60, p->timeslices = 0, p->age_time = ticks, p->cur_timeslices = 0; // By Order of the Peaky Blinders
+  p->punish = 0, p->cur_queue = 0, p->timeslices = 0;                              // By Order of the PEaky Blinders
 #if SCHEDULER == SCHED_PBS
   p->priority = 60;
 #else
@@ -106,7 +114,7 @@ found:
 #if SCHEDULER == SCHED_MLFQ
   for (int i = 0; i < 5; i++)
     p->queue[i] = 0;
-  p->cur_queue = -1;
+  p->cur_queue = 0;
 #else
   p->cur_queue = -1;
   for (int i = 0; i < 5; i++)
@@ -145,7 +153,28 @@ void increase_runtime(void) // By Order of the Peaky Blinders
   acquire(&ptable.lock);
   for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if (p->state == RUNNING)
-      p->etime = ticks, p->rtime++;
+      p->rtime++;
+  release(&ptable.lock);
+}
+
+void punisher()
+{
+  acquire(&ptable.lock);
+  myproc()->punish = 1;
+  release(&ptable.lock);
+}
+
+void increase_timeslice()
+{
+  acquire(&ptable.lock);
+  myproc()->cur_timeslices++;
+  release(&ptable.lock);
+}
+
+void increase_ticks()
+{
+  acquire(&ptable.lock);
+  myproc()->queue[myproc()->cur_queue]++;
   release(&ptable.lock);
 }
 
@@ -168,7 +197,7 @@ int set_priority(int new_priority, int pid) // By Order of the Peaky Blinders
     {
       old_priority = p->priority, p->priority = new_priority;
       if (new_priority != old_priority)
-        p->number_of_runs_by_priority = 0;
+        p->timeslices = 0;
     }
   }
   release(&ptable.lock);
@@ -212,6 +241,10 @@ void userinit(void)
   acquire(&ptable.lock);
 
   p->state = RUNNABLE;
+
+#if SCHEDULER == SCHED_MLFQ
+  queues[0] = push(queues[0], p); // By Order of the Peaky Blinders
+#endif
 
   release(&ptable.lock);
 }
@@ -281,6 +314,10 @@ int fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
+
+#if SCHEDULER == SCHED_MLFQ
+  queues[0] = push(queues[0], np);
+#endif
 
   release(&ptable.lock);
 
@@ -580,8 +617,16 @@ wakeup1(void *chan)
   struct proc *p;
 
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
     if (p->state == SLEEPING && p->chan == chan)
+    {
       p->state = RUNNABLE;
+#if SCHEDULER == SCHED_MLFQ // By Order of the Peaky Blinders
+      queues[p->queue] = push(queues[p->queue], p);
+      p->cur_timeslices = 0, p->age_time = ticks;
+#endif
+    }
+  }
 }
 
 // Wake up all processes sleeping on chan.
@@ -607,7 +652,14 @@ int kill(int pid)
       p->killed = 1;
       // Wake process from sleep if necessary.
       if (p->state == SLEEPING)
+      {
         p->state = RUNNABLE;
+#if SCHEDULER == SCHED_MLFQ // By Order of the Peaky Blinders
+        queues[p->queue] = push(queues[p->queue], p);
+        p->cur_timeslices = 0;
+        p->age_time = ticks;
+#endif
+      }
       release(&ptable.lock);
       return 0;
     }
@@ -630,7 +682,7 @@ int procdump(void)
       [RUNNING] "running",
       [ZOMBIE] "zombie"};
 
-  cprintf("PID\tPriority\tState\t\tr_time\tw_time\tn_run\tcur_q\tq[0]\tq[1]\tq[2]\tq[3]\tq[4]\n"); // By Order of the Peaky Blinders
+  cprintf("PID\tName\tPriority\tState\t\tr_time\tw_time\tn_run\tcur_q\tq[0]\tq[1]\tq[2]\tq[3]\tq[4]\n"); // By Order of the Peaky Blinders
 
   int i;
   struct proc *p;
@@ -645,7 +697,7 @@ int procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+    cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (p->etime - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
 
     for (i = 0; i < 5; i++) // By Order of the Peaky Blinders
       cprintf("\t%d", p->queue[i]);

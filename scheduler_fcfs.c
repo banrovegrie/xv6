@@ -44,7 +44,7 @@ void scheduler(void)
         // Enable interrupts on this processor - yielding disabled for FCFS
         sti();
         // Loop over process table looking for the process with earliest creation time to run
-        int min_time = ticks + 2;
+        int min_time = ticks + 100;
         struct proc *selected_proc = 0;
 
         acquire(&ptable.lock);
