@@ -622,7 +622,7 @@ wakeup1(void *chan)
     {
       p->state = RUNNABLE;
 #if SCHEDULER == SCHED_MLFQ // By Order of the Peaky Blinders
-      queues[p->queue] = push(queues[p->queue], p);
+      queues[p->cur_queue] = push(queues[p->cur_queue], p);
       p->cur_timeslices = 0, p->age_time = ticks;
 #endif
     }
@@ -655,7 +655,7 @@ int kill(int pid)
       {
         p->state = RUNNABLE;
 #if SCHEDULER == SCHED_MLFQ // By Order of the Peaky Blinders
-        queues[p->queue] = push(queues[p->queue], p);
+        queues[p->cur_queue] = push(queues[p->cur_queue], p);
         p->cur_timeslices = 0;
         p->age_time = ticks;
 #endif
