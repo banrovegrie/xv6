@@ -693,7 +693,12 @@ int procdump(void)
       state = states[p->state];
     else
       state = "???";
+
+#if SCHEDULER == SCHED_MLFQ
+    cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (ticks - p->age_time), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+#else
     cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (ticks - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+#endif
 
     for (i = 0; i < 5; i++) // By Order of the Peaky Blinders
       cprintf("\t%d", p->queue[i]);
