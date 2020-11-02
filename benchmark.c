@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    for (int pNo = 0, pid = 0; pNo < num_pro; pNo++)
+    for (int p_roll = 0, pid = 0; p_roll < num_pro; p_roll++)
     {
         if ((pid = fork()) < 0)
         {
@@ -16,37 +16,27 @@ int main(int argc, char *argv[])
         if (pid == 0)
         {
             int total = 0;
-            if (pNo % 4 == 0)
+            if (p_roll % 4 == 0)
             {
-                // CPU
                 for (int i = 0; i < 1e9; i++)
-                {
                     total += i;
-                }
             }
-            if (pNo % 4 == 1)
+            else if (p_roll % 4 == 1)
             {
-                // IO
                 for (int i = 0; i < 10; i++)
-                {
-                    sleep(70);
-                    total += i;
-                }
+                    sleep(70), total += i;
             }
-            if (pNo % 4 == 2)
+            else if (p_roll % 4 == 2)
             {
-                // IO then CPU
                 sleep(500);
                 for (int i = 0; i < 5; i++)
                 {
                     total += i;
                     for (int j = 0; j < 1e8; j++)
-                    {
                         total += j;
-                    }
                 }
             }
-            if (pNo % 4 == 3)
+            else
             {
                 for (int i = 0; i < 5; i++)
                 {
@@ -56,11 +46,11 @@ int main(int argc, char *argv[])
                 }
                 sleep(500);
             }
-            printf(1, "Benchmark: %d Exited, Category : %d, Total : %d\n", pNo, pNo % 4, total);
+            printf(1, "Benchmark: %d Exited, Category : %d, Total : %d\n", p_roll, p_roll % 4, total);
             exit();
         }
         else
-            set_priority(100 - (20 + pNo) % 2, pid);
+            set_priority(100 - (20 + p_roll) % 2, pid);
     }
 
     for (int j = 0; j < num_pro + 5; j++)

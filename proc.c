@@ -695,6 +695,9 @@ int procdump(void)
       state = "???";
 
 #if SCHEDULER == SCHED_MLFQ
+  /*if (p->state == SLEEPING)
+    cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (0), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
+  else*/
     cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (ticks - p->age_time), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
 #else
     cprintf("%d\t%s\t%d\t\t%s\t%d\t%d\t%d\t%d", p->pid, p->name, p->priority, state, p->rtime, (ticks - p->ctime - p->rtime), p->number_of_runs, p->cur_queue); // By Order of the Peaky Blinders
