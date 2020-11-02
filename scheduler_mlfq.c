@@ -87,7 +87,7 @@ void scheduler(void)
             {
                 p->cur_timeslices = 0, p->punish = 0, p->age_time = ticks;
 
-                if (p->queue != 5 - 1)
+                if (p->cur_queue != 5 - 1)
                     p->cur_queue++;
 
                 queues[p->cur_queue] = push(queues[p->cur_queue], p);
