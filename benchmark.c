@@ -3,6 +3,8 @@
 #include "user.h"
 
 #define num_pro 10
+#define e_nine ((int)1e9)
+#define e_eight ((int)1e8)
 
 int main(int argc, char *argv[])
 {
@@ -18,7 +20,7 @@ int main(int argc, char *argv[])
             int total = 0;
             if (p_roll % 4 == 0)
             {
-                for (int i = 0; i < 1e9; i++)
+                for (int i = 0; i < e_nine; i++)
                     total += i;
             }
             else if (p_roll % 4 == 1)
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
                 for (int i = 0; i < 5; i++)
                 {
                     total += i;
-                    for (int j = 0; j < 1e8; j++)
+                    for (int j = 0; j < e_eight; j++)
                         total += j;
                 }
             }
@@ -41,7 +43,7 @@ int main(int argc, char *argv[])
                 for (int i = 0; i < 5; i++)
                 {
                     total += i;
-                    for (int j = 0; j < 1e8; j++)
+                    for (int j = 0; j < e_eight; j++)
                         total += j;
                 }
                 sleep(500);

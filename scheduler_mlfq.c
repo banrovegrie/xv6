@@ -85,11 +85,13 @@ void scheduler(void)
             }
             else
             {
+
                 p->cur_timeslices = 0, p->punish = 0, p->age_time = ticks;
 
-                if (p->cur_queue != 5 - 1)
+                if (p->cur_queue != 4)
                     p->cur_queue++;
 
+                cprintf("MLFQ: process %d promoted to queue %d at ticks: %d", p->pid, p->cur_queue, ticks);
                 queues[p->cur_queue] = push(queues[p->cur_queue], p);
             }
         }

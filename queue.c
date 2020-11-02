@@ -54,8 +54,6 @@ struct node *pop(struct node *head)
     return temp;
 }
 
-// shifts all nodes with node->p->age_time > threshold from FROM list to TO list
-// returns the number of nodes shifted and updates the head pointers
 int split(struct node **from, struct node **to, int threshold)
 {
     if (from == 0 || to == 0)
@@ -73,6 +71,7 @@ int split(struct node **from, struct node **to, int threshold)
     {
         if (ticks - cur->p->age_time > threshold)
         {
+            cprintf("MLFQ: process %d promoted to queue %d at ticks: %d", cur->p->pid, cur->p->cur_queue - 1, ticks);
             cur->p->cur_queue--, cur->p->age_time = ticks;
             count++, prev = cur, cur = cur->next;
         }
