@@ -33,10 +33,14 @@ int main(int argc, char **argv)
         printf(2, "error: please enter correct arguments\n");
         exit();
     }
-
-    if (set_priority(priority, pid) < 0)
+    else
     {
-        printf(2, "error in set_priority\n");
+        int result = set_priority(priority, pid);
+
+        if (result < 0)
+            printf(2, "error in set_priority\n");
+        else
+            procdump();
     }
     exit();
 }
