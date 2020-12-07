@@ -1,4 +1,4 @@
-# Enhanced xv6
+# Improved xv6
 
 ## Outline
 
